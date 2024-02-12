@@ -36,3 +36,12 @@ export function validaEmail(campo) {
   }
   return correcto;
 }
+
+export function validaSelect(selector) {
+  let correcto = true;
+  if (selector.value == -1) {
+    mostrarError("Debe seleccionar una categoria", selector);
+    correcto = false;
+  }
+  return correcto;
+}
