@@ -268,8 +268,9 @@ function modArticulo(idarticulo) {
   let file = document.getElementById("file");
   let descr = document.getElementById("descr");
 
-  mostrarArtMod(idarticulo);
   enviarSelect(selector);
+  mostrarArtMod(idarticulo);
+  
 
   btnCancelarMod.addEventListener("click", (e) => {
     e.preventDefault();
@@ -284,11 +285,10 @@ function modArticulo(idarticulo) {
     
     limpiarErrores(errorMessage, errorContainer);
     if (validaSelect(selector))
-      if (validaObligatorio(file))
         if (validaObligatorio(articulo))
           if (validaObligatorio(precio))
             if (validaObligatorio(descr)) {
-              enviar();
+              enviar(idarticulo, articulo, selector, descr, precio, file)
             }
   });
 
@@ -404,4 +404,55 @@ function modArticulo(idarticulo) {
     console.log("Valor seleccionado: " + selector.value);
   }
 
+
+  ////////////////////////////////////////////////////////////
+  ///ENVIAR DATOS PARA MODIFICAR -->
+function enviar(idarticulo, articulo, categoria, descr, precio, file) {
+  let imageArchivo = document.getElementById("imgfile");
+  var datos = new FormData();
+  datos.append("opcion", "MA");
+  datos.append("idarticulo", idarticulo);
+  datos.append("categoria", categoria.value);
+  datos.append("nombre", articulo.value);
+  datos.append("descripcion", descr.value);
+  datos.append("precio", precio.value);
+  if (file.files[0] == null) {
+    datos.append("foto", imageArchivo.name);
+  } else {
+    datos.append("foto", file.files[0]);
+  }
+
+  let url = "php/coop24.php";
+  var solicitud = new XMLHttpRequest();
+  solicitud.addEventListener("load", function () {
+    try {
+      if (solicitud.status === 200) {
+        if (solicitud.responseText.trim() === "ok") {
+          alert("Datos registrados");
+          Swal.fire({
+            title: "Artículo modificado",
+            text: "datos del artículo modificados",
+            icon: "success",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              document.querySelector("form").submit();
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error de registro",
+            text: "No se ha podido modificar el artículo",
+          });
+        }
+      } else {
+        throw new Error("Error en la solicitud: " + solicitud.status);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+  solicitud.open("POST", url, true);
+  solicitud.send(datos); 
+}
 }
