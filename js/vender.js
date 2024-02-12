@@ -1,5 +1,5 @@
 "use strict";
-import {limpiarErrores, validaObligatorio, validaSelect} from "./valida.js";
+import { limpiarErrores, validaObligatorio, validaSelect } from "./valida.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   let nombre = document.getElementById("nombre");
@@ -7,16 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
   // Establecer el valor en el input
   document.getElementById("vendedor").value =
     localStorage.getItem("nombreUsuario");
-let idUsuario = localStorage.getItem('idUsuario');
+  let idUsuario = localStorage.getItem("idUsuario");
 
-    console.log(localStorage.getItem("idUsuario"));
-    console.log('nombre usuario: '+localStorage.getItem("nombreUsuario"));
+  console.log(localStorage.getItem("idUsuario"));
+  console.log("nombre usuario: " + localStorage.getItem("nombreUsuario"));
 
   //visualizar imagen
   let inputArchivo = document.getElementById("file");
   let imageArchivo = document.getElementById("imgfile");
   inputArchivo.addEventListener("change", function () {
-    let archivo = this.files[0]; 
+    let archivo = this.files[0];
     if (archivo.type.match("image.*")) {
       let tmpPath = URL.createObjectURL(archivo);
       imageArchivo.setAttribute("src", tmpPath);
@@ -28,13 +28,12 @@ let idUsuario = localStorage.getItem('idUsuario');
   let precio = document.getElementById("precio");
   let selector = document.getElementById("categoria");
   let file = document.getElementById("file");
-  let descr = document.getElementById('descr');
+  let descr = document.getElementById("descr");
 
   window.addEventListener("load", () => {
     let btnEnviar = document.getElementById("enviar");
     let errorMessage = document.getElementById("errorMessage");
     let errorContainer = document.getElementById("error");
-
 
     enviarSelect(selector);
     btnEnviar.addEventListener("click", (e) => {
@@ -45,13 +44,11 @@ let idUsuario = localStorage.getItem('idUsuario');
         if (validaObligatorio(file))
           if (validaObligatorio(articulo))
             if (validaObligatorio(precio))
-              if (validaObligatorio(descr))
-                {
-                  enviar();
-                }
+              if (validaObligatorio(descr)) {
+                enviar();
+              }
     });
   });
-
 
   function enviarSelect() {
     var datos = new FormData();
@@ -94,15 +91,15 @@ let idUsuario = localStorage.getItem('idUsuario');
     console.log("Valor seleccionado: " + selector.value);
   }
 
-  function enviar(){
+  function enviar() {
     var datos = new FormData();
-    datos.append('opcion', 'RA');
-    datos.append('categoria', selector.value);
-    datos.append('nombre', articulo.value);
-    datos.append('precio', precio.value);
-    datos.append('imagen', file.files[0]);
-    datos.append('descripcion', descr.value);
-    datos.append('vendedor', localStorage.getItem('idUsuario'));
+    datos.append("opcion", "RA");
+    datos.append("categoria", selector.value);
+    datos.append("nombre", articulo.value);
+    datos.append("precio", precio.value);
+    datos.append("imagen", file.files[0]);
+    datos.append("descripcion", descr.value);
+    datos.append("vendedor", localStorage.getItem("idUsuario"));
 
     let url = "php/coop24.php";
     var solicitud = new XMLHttpRequest();
@@ -115,10 +112,12 @@ let idUsuario = localStorage.getItem('idUsuario');
             Swal.fire({
               title: "Artículo registrado",
               text: "ya se encuentra disponible en la tienda",
-              icon: "success"
-          }).then((result) => {
+              icon: "success",
+            }).then((result) => {
               if (result.isConfirmed) {
-            window.location.reload();}})
+                window.location.reload();
+              }
+            });
           } else {
             throw new Error(solicitud.responseText.trim());
           }
@@ -131,6 +130,5 @@ let idUsuario = localStorage.getItem('idUsuario');
     });
     solicitud.open("POST", url, true);
     solicitud.send(datos); //del FormData
-}
-
+  }
 });
