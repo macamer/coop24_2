@@ -1,3 +1,6 @@
+"use strict";
+import {limpiarErrores, validaObligatorio, validaSelect} from "./valida.js";
+
 document.addEventListener("DOMContentLoaded", function () {
   let nombre = document.getElementById("nombre");
   nombre.innerHTML = localStorage.getItem("nombreUsuario");
@@ -13,7 +16,7 @@ let idUsuario = localStorage.getItem('idUsuario');
   let inputArchivo = document.getElementById("file");
   let imageArchivo = document.getElementById("imgfile");
   inputArchivo.addEventListener("change", function () {
-    archivo = this.files[0];
+    let archivo = this.files[0]; 
     if (archivo.type.match("image.*")) {
       let tmpPath = URL.createObjectURL(archivo);
       imageArchivo.setAttribute("src", tmpPath);
@@ -49,11 +52,6 @@ let idUsuario = localStorage.getItem('idUsuario');
     });
   });
 
-  function limpiarErrores(errores, errorContainer) {
-    // Limpiar mensajes de error anteriores
-    errores.innerHTML = "";
-    errorContainer.style.display = "none";
-  }
 
   function enviarSelect() {
     var datos = new FormData();
@@ -134,46 +132,5 @@ let idUsuario = localStorage.getItem('idUsuario');
     solicitud.open("POST", url, true);
     solicitud.send(datos); //del FormData
 }
-
-///////////////////////////////////////////////////
-//-- VALIDACIONES ---
-
-  function limpiarErrores(errores, errorContainer) {
-    // Limpiar mensajes de error anteriores
-    errores.innerHTML = "";
-    errorContainer.style.display = "none";
-  }
-
-  function mostrarError(mens, campo) {
-    let errorMessage = document.getElementById("errorMessage");
-    let errorContainer = document.getElementById("error");
-    errorMessage.innerHTML = mens;
-    errorContainer.style.display = "flex";
-    errorContainer.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
-    campo.focus();
-  }
-
-  function validaObligatorio(campo) {
-    let correcto = true;
-    if (!campo || campo.value === "" || campo.value === null) {
-      mostrarError("Debe introducir " + campo.name, campo);
-      correcto = false;
-    }
-    return correcto;
-  }
-
-  function validaSelect(selector) {
-    let correcto = true;
-    if (selector.value == -1) {
-      mostrarError("Debe seleccionar una categoria", selector);
-      correcto = false;
-    }
-    return correcto;
-  }
-
 
 });
