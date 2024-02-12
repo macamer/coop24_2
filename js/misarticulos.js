@@ -258,6 +258,9 @@ function modArticulo(idarticulo) {
   //BOTONES
   let btnCancelarMod = document.getElementById("cancelMod");
   let btnEnviarMod = document.getElementById("enviarMod");
+  //ERRORES
+  let errorMessage = document.getElementById("errorMessage");
+  let errorContainer = document.getElementById("error");
   //FORMUALRIO
   let articulo = document.getElementById("articulo");
   let precio = document.getElementById("precio");
@@ -265,33 +268,20 @@ function modArticulo(idarticulo) {
   let file = document.getElementById("file");
   let descr = document.getElementById("descr");
 
-  //visualizar imagen ARCHIVO
-  let inputArchivo = document.getElementById("file");
-  let imageArchivo = document.getElementById("imgfile");
-  inputArchivo.addEventListener("change", function () {
-    let archivo = this.files[0];
-    if (archivo.type.match("image.*")) {
-      let tmpPath = URL.createObjectURL(archivo);
-      imageArchivo.setAttribute("src", tmpPath);
-    } else {
-      alert("No es un archivo de imagen");
-    }
-  });
-
-
-
-
-
+  mostrarArtMod(idarticulo);
+  enviarSelect(selector);
 
   btnCancelarMod.addEventListener("click", (e) => {
     e.preventDefault();
     document.getElementById("articulos").style = "display:block;";
     document.getElementById("modSection").style = "display:none;";
+    limpiarErrores(errorMessage, errorContainer);
   });
 
+  
   btnEnviarMod.addEventListener("click", (e) => {
     e.preventDefault();
-    mostrarArtMod(idarticulo);
+    
     limpiarErrores(errorMessage, errorContainer);
     if (validaSelect(selector))
       if (validaObligatorio(file))
@@ -341,23 +331,25 @@ function modArticulo(idarticulo) {
     let selector = document.getElementById("categoria");
     let file = document.getElementById("file");
     let descr = document.getElementById("descr");
+    let inputArchivo = document.getElementById("file");
+    let imageArchivo = document.getElementById("imgfile");
 
     console.log(art[0].nombre);
+
     selector.value = art[0].categoria;
     articulo.value = art[0].nombre;
     precio.value = art[0].precio;
-    file.src = art[0].imagen;
+    //file.src = art[0].imagen;
     descr.value = art[0].descripcion;
 
-    /*
-  //visualizar imagen
-
-  imageArchivo.src = "socios/" + art[0].foto;
-  imageArchivo.name = art[0].foto;
+  //Visualiza imagen ARTICULO
+  imageArchivo.src = "archivos/" + art[0].imagen;
+  imageArchivo.name = art[0].imagen;
+  console.log(art[0].imagen);
   console.log("name: " + imageArchivo.name);
   console.log("src: " + imageArchivo.src);
   inputArchivo.addEventListener("change", function () {
-    archivo = this.files[0];
+    let archivo = this.files[0];
     if (archivo.type.match("image.*")) {
       let tmpPath = URL.createObjectURL(archivo);
       imageArchivo.setAttribute("src", tmpPath);
@@ -366,6 +358,50 @@ function modArticulo(idarticulo) {
     } else {
       alert("No es un archivo de imagen");
     }
-  });*/
+  });
+
+
   };
+
+  function enviarSelect() {
+    var datos = new FormData();
+    datos.append("opcion", "TC");
+
+    let url = "php/coop24.php";
+    var solicitud = new XMLHttpRequest();
+
+    solicitud.addEventListener("load", function () {
+      try {
+        if (solicitud.status === 200) {
+          if (solicitud.responseText.trim() !== "error") {
+            mostrarCategoria(JSON.parse(solicitud.responseText));
+          } else {
+            alert("No hay Artículos");
+          }
+        } else {
+          throw new Error("Error en la solicitud: " + solicitud.status);
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+    solicitud.open("POST", url, true);
+    solicitud.send(datos); //del FormData
+  }
+
+  // Función que maneja la respuesta y actualiza el select
+  function mostrarCategoria(art) {
+    let selector = document.getElementById("categoria");
+
+    art.forEach((art) => {
+      let opcion = document.createElement("option");
+      opcion.value = art.id;
+      opcion.text = art.nombre;
+      opcion.classList.add("categoria");
+      selector.appendChild(opcion);
+    });
+
+    console.log("Valor seleccionado: " + selector.value);
+  }
+
 }
