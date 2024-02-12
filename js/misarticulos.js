@@ -1,5 +1,6 @@
 "use strict";
 import { crearElemento, crearElementoTexto } from "./crearElement.js";
+import { limpiarErrores, validaObligatorio, validaSelect } from "./valida.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   let nombre = document.getElementById("nombre");
@@ -11,7 +12,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+
 ////////////////////////////////////////////////////////////////
+////MOSTRAR ARTICULOS -->
 function jsonArticulos(contenedor) {
   let idUsuario = localStorage.getItem("idUsuario");
   var datos = new FormData();
@@ -54,8 +57,10 @@ const mostrarArticulos = (articulos, contenedor) => {
   contenedor.appendChild(filaContainer);
 
   let contadorProductos = 0;
+
+
   //////////////////////////////////////////////
-  //articulos en venta
+  /////ARTICULOS EN VENTA -->
   artEnVenta.forEach((articulo) => {
     if (contadorProductos % 3 === 0 && contadorProductos !== 0) {
       // Crear un nuevo contenedor para cada fila
@@ -64,7 +69,7 @@ const mostrarArticulos = (articulos, contenedor) => {
       contenedor.appendChild(filaContainer);
     }
 
-    // Crear un contenedor para cada producto
+    // Crear un contenedor para cada producto -------------------CREAR UNA FUNCION?¿?¿?¿?¿?¿?¿?¿
     let contenedorP = crearElemento("div", filaContainer);
     contenedorP.classList.add("contenedorP");
     contenedorP.classList.add("border");
@@ -76,7 +81,7 @@ const mostrarArticulos = (articulos, contenedor) => {
     producto.classList.add("producto");
     producto.value = articulo.id;
 
-    // Crear elementos para mostrar la información del producto
+    // Crear elementos para mostrar la información del producto ----------CREAR UNA FUNCION?¿?¿?¿?¿?¿?¿?¿
     let imagen = crearElemento("img", producto);
     imagen.classList.add("img-fluid");
     imagen.classList.add("border");
@@ -84,7 +89,7 @@ const mostrarArticulos = (articulos, contenedor) => {
     imagen.alt = articulo.descripcion;
 
     let nombre = crearElementoTexto(articulo.nombre, "p", producto);
-    nombre.classList.add("nombre"); // Ajusta según tu necesidad
+    nombre.classList.add("nombre"); // Ajusta según tu necesidad !!!!!!!!!!!!!!!!! ------------
 
     let precio = crearElementoTexto(
       "Precio: $" + parseFloat(articulo.precio).toFixed(2),
@@ -97,6 +102,7 @@ const mostrarArticulos = (articulos, contenedor) => {
     let btnGrup = crearElemento("div", producto);
     btnGrup.classList.add("btn-group");
 
+    //BOTON DE MODIFICAR
     let botonMod = crearElemento("button", btnGrup);
     botonMod.classList.add("btn");
     botonMod.classList.add("btn-success");
@@ -108,6 +114,7 @@ const mostrarArticulos = (articulos, contenedor) => {
       console.log("Producto modificar: " + idarticulo);
     });
 
+    //BOTON DE BORRAR
     let botonBorrar = crearElemento("button", btnGrup);
     botonBorrar.classList.add("btn");
     botonBorrar.classList.add("btn-danger");
@@ -119,12 +126,12 @@ const mostrarArticulos = (articulos, contenedor) => {
       console.log("Producto a borrar: " + articulo.idarticulo);
     });
 
-    // Incrementar el contador de productos
     contadorProductos++;
   });
 
+
   //////////////////////////////////////////////
-  //articulos vendidos
+  ///////ARTICULOS VENDIDOS -->
   artVendidos.forEach((articulo) => {
     if (contadorProductos % 3 === 0 && contadorProductos !== 0) {
       // Crear un nuevo contenedor para cada fila
@@ -180,7 +187,9 @@ const mostrarArticulos = (articulos, contenedor) => {
   });
 };
 
-//////////////////////////////////////////
+
+///////////////////////////////////////////////
+///BORRAR --->
 function preguntaBorrar(idarticulo) {
   Swal.fire({
     title: "¿Quieres eliminar el artículo?",
@@ -236,12 +245,43 @@ function borrarArticulo(idarticulo) {
   solicitud.send(datos);
 }
 
+
 //////////////////////////////////////////////////////
+//MODIFICAR ART --->
 function modArticulo(idarticulo) {
+  //MOSTRAR modSection OCULTAR articulos
   document.getElementById("articulos").style = "display:none;";
   document.getElementById("modSection").style = "display:block;";
+
+  // Establecer el valor en el input del VENDEDOR
+  document.getElementById("vendedor").value = localStorage.getItem("nombreUsuario");
+  //BOTONES
   let btnCancelarMod = document.getElementById("cancelMod");
   let btnEnviarMod = document.getElementById("enviarMod");
+  //FORMUALRIO
+  let articulo = document.getElementById("articulo");
+  let precio = document.getElementById("precio");
+  let selector = document.getElementById("categoria");
+  let file = document.getElementById("file");
+  let descr = document.getElementById("descr");
+
+  //visualizar imagen ARCHIVO
+  let inputArchivo = document.getElementById("file");
+  let imageArchivo = document.getElementById("imgfile");
+  inputArchivo.addEventListener("change", function () {
+    let archivo = this.files[0];
+    if (archivo.type.match("image.*")) {
+      let tmpPath = URL.createObjectURL(archivo);
+      imageArchivo.setAttribute("src", tmpPath);
+    } else {
+      alert("No es un archivo de imagen");
+    }
+  });
+
+
+
+
+
 
   btnCancelarMod.addEventListener("click", (e) => {
     e.preventDefault();
@@ -252,6 +292,14 @@ function modArticulo(idarticulo) {
   btnEnviarMod.addEventListener("click", (e) => {
     e.preventDefault();
     mostrarArtMod(idarticulo);
+    limpiarErrores(errorMessage, errorContainer);
+    if (validaSelect(selector))
+      if (validaObligatorio(file))
+        if (validaObligatorio(articulo))
+          if (validaObligatorio(precio))
+            if (validaObligatorio(descr)) {
+              enviar();
+            }
   });
 
   ////////////////////////////////////////////////////
