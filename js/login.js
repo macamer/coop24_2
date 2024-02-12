@@ -1,5 +1,6 @@
 
 "use strict";
+import { limpiarErrores, validaObligatorio, validaEmail } from "./valida.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
   });
-
+/*
   function limpiarErrores(errores, errorContainer) {
     // Limpiar mensajes de error anteriores
     errores.innerHTML = "";
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     return correcto;
   }
-
+*/
   function enviar() {
     var datos = new FormData();
     datos.append("opcion", "SR");
