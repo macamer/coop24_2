@@ -1,9 +1,7 @@
 'use strict';
 import { crearElemento, crearElementoTexto } from "./crearElement.js";
 
-//document.addEventListener("DOMContentLoaded", function () {
-  let nombre = document.getElementById("nombre");
-  nombre.innerHTML = localStorage.getItem("nombreUsuario");
+  document.getElementById("nombre").innerHTML = localStorage.getItem("nombreUsuario");
 
   window.addEventListener("load", () => {
     enviar();
@@ -40,6 +38,7 @@ import { crearElemento, crearElementoTexto } from "./crearElement.js";
   }
 
   const mostrarArticulos = (articulos, pagina) => {
+    //filtro para que salgan solo los articulos de los demás vendedores
     articulos = articulos.filter((elem) => elem.vendedor != localStorage.getItem('idUsuario'));
     let contenedor = document.getElementById("articulos");
     contenedor.innerHTML = ""; // Limpiar el contenedor antes de mostrar nuevos elementos
@@ -52,11 +51,11 @@ import { crearElemento, crearElementoTexto } from "./crearElement.js";
     let contadorProductos = 0;
 
     ////////////////////////////////////////////////////////////////
-    let totalPaginas = Math.ceil(articulos.length / 9);
+    let totalPaginas = Math.ceil(articulos.length / 6);
     if (pagina > totalPaginas){	pagina = totalPaginas
     }else if (pagina < 1) pagina = 1;
-    let primeroIncluido = 9 * (pagina - 1);
-    let ultimoExcluido = 9 + primeroIncluido;
+    let primeroIncluido = 6 * (pagina - 1);
+    let ultimoExcluido = 6 + primeroIncluido;
     if (ultimoExcluido > articulos.length) ultimoExcluido = articulos.length;
     let jsonArticulosPagina = [...articulos].slice(primeroIncluido, ultimoExcluido);
 

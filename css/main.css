@@ -20,7 +20,6 @@ section {
     display: flex;
     justify-content: space-evenly;
     margin-bottom: 20px; /* Ajusta el espacio entre filas según tus necesidades */
-    padding: 2em;
 }
 
 .contenedorP {
