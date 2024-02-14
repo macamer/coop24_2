@@ -1,5 +1,5 @@
 "use strict";
-import {limpiarErrores, validaObligatorio, validaSelect, errorNoRegistro, errorSwal, successSwal} from "./valida.js";
+import {limpiarErrores, validaObligatorio, validaSelect, errorNoRegistro, errorSwal, successSwal, limpiarStorage} from "./valida.js";
 
 if (sessionStorage.getItem("nombreUsuario") == "") {
   errorNoRegistro();
@@ -63,8 +63,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
       window.addEventListener("load", () => {
         document.getElementById("logout").addEventListener('click', (e) => {
           e.preventDefault();
-          sessionStorage.setItem("nombreUsuario", "");
-          sessionStorage.setItem("idUsuario", "");
+          limpiarStorage();
           window.location.href = "index.html";
         });
       });

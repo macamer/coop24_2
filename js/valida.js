@@ -4,6 +4,11 @@ export function limpiarErrores(errores, errorContainer) {
   errorContainer.style.display = "none";
 }
 
+export function limpiarStorage(){
+  sessionStorage.setItem("nombreUsuario", "");
+  sessionStorage.setItem("idUsuario", "");
+}
+
 function mostrarError(mens, campo) {
   let errorMessage = document.getElementById("errorMessage");
   let errorContainer = document.getElementById("error");

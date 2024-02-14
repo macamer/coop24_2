@@ -20,7 +20,6 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
 
   /////////////////////////////////////////////////////
   function enviar() {
-    //let contenedor = document.getElementById("articulos");
     var datos = new FormData();
     datos.append("opcion", "AV");
 

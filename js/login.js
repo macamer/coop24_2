@@ -6,12 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let email = document.getElementById("email");
   let contra = document.getElementById("contra");
 
-  //AL ENVIAR
   window.addEventListener("load", () => {
     let btnEnviar = document.getElementById("enviar");
     let errorMessage = document.getElementById("errorMessage");
     let errorContainer = document.getElementById("error");
-
+    //boton de enviar
     btnEnviar.addEventListener("click", (e) => {
       e.preventDefault();
       limpiarErrores(errorMessage, errorContainer);
@@ -22,53 +21,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
   });
-/*
-  function limpiarErrores(errores, errorContainer) {
-    // Limpiar mensajes de error anteriores
-    errores.innerHTML = "";
-    errorContainer.style.display = "none";
-  }
 
-  function mostrarError(mens, campo) {
-    let errorMessage = document.getElementById("errorMessage");
-    let errorContainer = document.getElementById("error");
-    errorMessage.innerHTML = mens;
-    errorContainer.style.display = "flex";
-    errorContainer.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
-    campo.focus();
-  }
-
-  function validaObligatorio(campo) {
-    let correcto = true;
-    //var nomexpreg = /^([a-zA-Z\s-]{2,15})$/; //entre 2 y 15 carácteres
-    if (campo.value === "" || campo.value === null) {
-      mostrarError("Debe introducir " + campo.name, campo);
-      correcto = false;
-    }
-    return correcto;
-  }
-
-  function validaEmail(campo) {
-    let correcto = true;
-    var emailexpreg = /[\w-\.]{3,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-    if (!emailexpreg.test(campo.value)) {
-      mostrarError("Debe introducir un correo válido", campo);
-      correcto = false;
-    }
-    return correcto;
-  }
-*/
   function enviar() {
     var datos = new FormData();
     datos.append("opcion", "SR");
     datos.append("email", email.value);
     datos.append("password", contra.value);
-
-    let url = "php/coop24.php";
+    fetch("php/coop24.php", { method: "POST", body: datos })
+    .then((response) => {
+      if (!response.ok) {
+        errorSwal("Error", "Error en la solicitud")
+      }
+      return response.json(); // convertir respuesta a JSON
+    }).then((data) => {
+      sessionStorage.setItem("nombreUsuario", data[0].nombre); 
+      sessionStorage.setItem("idUsuario", data[0].id); 
+      alert("id: "+sessionStorage.getItem("idUsuario"));
+      successSwalTimer("Usuario Registrado", "Ya puedes entrar en la tienda");
+    })
+    .catch((error) => {
+      errorSwal("Error", error);
+      console.error("Error: ", error);
+    });
+  }
+});
+    /*let url = "php/coop24.php";
     var solicitud = new XMLHttpRequest();
 
     solicitud.addEventListener("load", function () {
@@ -102,5 +79,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     solicitud.open("POST", url, true);
     solicitud.send(datos); //del FormData
-  }
-});
+  }*/
+
