@@ -26,7 +26,7 @@ if (sessionStorage.getItem("idUsuario") == "") {
 
 ////////////////////////////////////////////////////////////////
 ////MOSTRAR ARTICULOS -->
-function jsonArticulos(contenedor) {
+function jsonArticulos() {
   let idUsuario = sessionStorage.getItem("idUsuario");
   var datos = new FormData();
   datos.append("opcion", "SV");
@@ -36,29 +36,36 @@ function jsonArticulos(contenedor) {
         if (!response.ok) {
           errorSwal("Error", "Error en la solicitud");
         }
-        return response.json(); // convertir respuesta a JSON
+        return response.text(); // convertir respuesta a texto
       })
       .then((data) => {
-          mostrarArticulos(data, 1);}
-      )
+        if (data.trim() === "error") {
+          console.log(data);
+          // No hay artículos disponibles
+          document.getElementById("articulos").innerHTML = "<div class='container my 5 text-center'><h5> No hay artículos </h5> </div>";
+          document.getElementById("vendidos").innerHTML = "<div class='container my 5 text-center'><h5> No hay artículos </h5> </div>";
+        } else {
+          // La respuesta contiene datos de artículos
+          const jsonData = JSON.parse(data);
+        console.log("Respuesta del servidor:", data);
+          mostrarVenta(jsonData, 1);
+          mostrarVendidos(jsonData, 1);
+        } 
+      })
       .catch((error) => {
         errorSwal("Error", error);
         console.error("Error: ", error);
       });
 }
 
-const mostrarArticulos = (articulos, pagina) => {
+const mostrarVenta = (articulos, pagina) => {
   let artEnVenta = articulos.filter((elem) => elem.estado == "D");
-  let artVendidos = articulos.filter((elem) => elem.estado == "V");
   let contVenta = document.getElementById("articulos");
-  let contVendido = document.getElementById("vendidos");
   contVenta.innerHTML = ""; 
-  contVendido.innerHTML="";
-
   if(artEnVenta.length == 0){
     contVenta.innerHTML = "<div class='container my 5 text-center'><h5> No hay artículos </h5> </div>";
   } else {
-    const elementosPorPagina = 6;
+    const elementosPorPagina = 3;
     let contadorProductos = 0;
     let filaContainer;
     const totalPaginas = Math.ceil(artEnVenta.length/elementosPorPagina);
@@ -97,26 +104,22 @@ const mostrarArticulos = (articulos, pagina) => {
 
       //BOTON DE MODIFICAR
       let botonMod = crearElemento("button", btnGrup);
-      botonMod.classList.add("btn");
-      botonMod.classList.add("btn-success");
+      botonMod.classList.add("btn","btn-success");
       botonMod.textContent = "Modificar";
       botonMod.id = "mod";
       botonMod.addEventListener("click", (e) => {
         e.preventDefault();
         modArticulo(articulo.id);
-        console.log("Producto modificar: " + articulo.id);
       });
 
     //BOTON DE BORRAR
     let botonBorrar = crearElemento("button", btnGrup);
-    botonBorrar.classList.add("btn");
-    botonBorrar.classList.add("btn-danger");
+    botonBorrar.classList.add("btn","btn-danger");
     botonBorrar.textContent = "Borrar";
     botonBorrar.id = "borrar";
     botonBorrar.addEventListener("click", (e) => {
       e.preventDefault();
       preguntaBorrar(articulo.id);
-      console.log("Producto a borrar: " + articulo.id);
     });
   
     contadorProductos++;
@@ -134,25 +137,29 @@ const mostrarArticulos = (articulos, pagina) => {
       else btn.classList.add("btn-principal");
       btn.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarArticulos(articulos, i);
+        mostrarVenta(artEnVenta, i);
       });
     }
   }
+}
 ////////////////////////////////////////////////////////////////////////
+const mostrarVendidos = (articulos, paginaV) => {
+  let artVendidos = articulos.filter((elem) => elem.estado == "V");
+  let contVendido = document.getElementById("vendidos");
+
   if(artVendidos.length == 0){
     contVendido.innerHTML="<div class='container my 5 text-center'><h5> No hay artículos </h5> </div>";
   } else {
-    const elementosPorPagina = 6;
-    let contadorProductos = 0;
+    contVendido.innerHTML="";
+    const elementosPorPagina = 3;
+    let contadorProductosV = 0;
     let filaContainer;
     const totalPaginas = Math.ceil(artVendidos.length/elementosPorPagina);
-    const inicio = (pagina - 1) * elementosPorPagina;
-    const fin = pagina * elementosPorPagina;
+    const inicioV = (paginaV - 1) * elementosPorPagina;
+    const finV = paginaV * elementosPorPagina;
 
-    artVendidos.slice(inicio, fin).forEach((articulo) => {
-      
-      if (contadorProductos % 3 === 0) {
-        // Crear un nuevo contenedor para cada fila
+    artVendidos.slice(inicioV, finV).forEach((articulo) => {
+      if (contadorProductosV % 3 === 0) {
         filaContainer = crearElemento("div", contVendido);
         filaContainer.classList.add("fila");
       }
@@ -177,8 +184,7 @@ const mostrarArticulos = (articulos, pagina) => {
       precio.classList.add("precio");
 
       let botonVendido = crearElemento("button", producto);
-      botonVendido.classList.add("btn");
-      botonVendido.classList.add("btn-secondary");
+      botonVendido.classList.add("btn","btn-secondary");
       botonVendido.textContent = "Vendido";
       botonVendido.id = "vend";
       botonVendido.addEventListener("click", (e) => {
@@ -190,22 +196,22 @@ const mostrarArticulos = (articulos, pagina) => {
         });
       });
        
-    contadorProductos++;
+    contadorProductosV++;
   })
   
     let divPaginas = document.getElementById("pagina2");
     divPaginas.innerHTML = ""; 
-    let divBtn = document.createElement("div");
-    divBtn.classList.add("paginator");
-    divPaginas.appendChild(divBtn);
+    let divBtnV = crearElemento("div", divPaginas);
+    divBtnV.classList.add("paginator","boton2");
     for (let i = 1; i <= totalPaginas; i++) {
-      let btn = crearElementoTexto(i, "button", divBtn);
-      btn.classList.add("btn", "btn-paginator");
-      if (i == pagina) btn.classList.add("btn-secundario");
-      else btn.classList.add("btn-principal");
-      btn.addEventListener("click", (e) => {
+      let btnV = crearElementoTexto(i, "button", divBtnV);
+      btnV.classList.add("btn", "btn-paginator","boton2");
+      if (i == paginaV) btnV.classList.add("btn-secundario");
+      else btnV.classList.add("btn-principal");
+
+      btnV.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarArticulos(articulos, i);
+        mostrarVendidos(artVendidos, i);
       });
     }
   }
@@ -223,9 +229,7 @@ function preguntaBorrar(idarticulo) {
     cancelButtonColor: "#d33",
     confirmButtonText: "Borrar",
   }).then((result) => {
-    if (result.isConfirmed) {
-      borrarArticulo(idarticulo); // Llama a la función para borrar el artículo después de que el usuario confirme
-    }
+    if (result.isConfirmed)borrarArticulo(idarticulo); // Llama a la función para borrar el artículo después de que el usuario confirme
   });
 }
 
@@ -236,16 +240,10 @@ function borrarArticulo(idarticulo){
 
   fetch("php/coop24.php", { method: "POST", body: datos })
     .then((data) => {
-      if (data.ok) {
-        successSwal("Artículo Borrado", "Tu artículo ha sido borrado");
-      } else {
-        errorSwalPag("Error","No sa he podido borrar","misarticulos.html")
-      }
+      if (data.ok) successSwal("Artículo Borrado", "Tu artículo ha sido borrado");
+      else errorSwalPag("Error","No sa he podido borrar","misarticulos.html")
     })
-    .catch((error) => {
-      errorSwal("Error", error);
-      console.error("Error: ", error);
-    });
+    .catch((error) => {errorSwal("Error", error);});
 }
 
 
@@ -315,29 +313,21 @@ function modArticulo(idarticulo) {
       .then((data) => {mostrarDatos(data);})
       .catch((error) => {errorSwal("Error", error);});
     }
-
   //////////////////////////////////////////////////////////////////
   const mostrarDatos = (art) => {
     let articulo = document.getElementById("articulo"); //nombre
     let precio = document.getElementById("precio");
     let selector = document.getElementById("categoria");
-    let file = document.getElementById("file");
     let descr = document.getElementById("descr");
-    
     let imageArchivo = document.getElementById("imgfile");
-
-    console.log(art[0].nombre);
 
     selector.value = art[0].categoria;
     articulo.value = art[0].nombre;
     precio.value = parseFloat(art[0].precio).toFixed(2);
-    //file.src = art[0].imagen;
     descr.value = art[0].descripcion;
-
     //Visualiza imagen ARTICULO
     imageArchivo.src = "archivos/" + art[0].imagen;
     imageArchivo.name = art[0].imagen;
-    
   };
 
   function enviarSelect() {

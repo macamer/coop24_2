@@ -61,17 +61,17 @@ img {
 }
 #compra,
 .btn-secundario {
-    background-color: #55293c;
+    background-color: rgb(18, 18, 31);
     color:#ffffff;
 }
 .btn-principal{
-    background-color: #d683a3;
+    background-color: #565765;
     color:#ffffff;
 }
 #compra:hover,
 .btn-secundario:hover,
 .btn-principal:hover{
-    background-color: #9b2558;
+    background-color: rgb(0, 0, 0);
     color: #ffffff;
 }
 
