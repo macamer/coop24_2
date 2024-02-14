@@ -1,3 +1,6 @@
+'use strict';
+import { validaObligatorio, validaEmail, repetirContrasenya, errorSwal, successSwal} from "./valida.js";
+
 document.addEventListener("DOMContentLoaded", function () {
   let name = document.getElementById("name");
   let ape = document.getElementById("ape");
@@ -26,55 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  function limpiarErrores(errores, errorContainer) {
-    // Limpiar mensajes de error anteriores
-    errores.innerHTML = "";
-    errorContainer.style.display = "none";
-  }
-
-  function mostrarError(mens, campo) {
-    let errorMessage = document.getElementById("errorMessage");
-    let errorContainer = document.getElementById("error");
-    errorMessage.innerHTML = mens;
-    errorContainer.style.display = "flex";
-    errorContainer.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
-    campo.focus();
-  }
-
-  function validaObligatorio(campo) {
-    let correcto = true;
-    //var nomexpreg = /^([a-zA-Z\s-]{2,15})$/; //entre 2 y 15 carácteres
-    if (campo.value === "" || campo.value === null) {
-      mostrarError("Debe introducir " + campo.name, campo);
-      correcto = false;
-    }
-    return correcto;
-  }
-
-  function validaEmail(campo) {
-    let correcto = true;
-    var emailexpreg = /[\w-\.]{3,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-    if (!emailexpreg.test(campo.value)) {
-      mostrarError("Debe introducir un correo válido", campo);
-      correcto = false;
-    }
-    return correcto;
-  }
-
-  function repetirContrasenya(campo1, campo2) {
-    let correcto = true;
-    if (campo1.value !== campo2.value) {
-      campo2.value = "";
-      mostrarError("Las contraseñas no coinciden", campo2);
-      correcto = false;
-    }
-    return correcto;
-  }
-
   function enviar() {
     var datos = new FormData();
     datos.append("opcion", "RS");
@@ -84,6 +38,22 @@ document.addEventListener("DOMContentLoaded", function () {
     datos.append("password", contra.value);
     datos.append("repassword", contra2.value);
 
+    fetch("php/coop24.php", { method: "POST", body: datos })
+    .then((response) => {
+      if (!response.ok) {
+        errorSwal("Error", "error en la solicitud");
+      }
+      return response.json(); // convertir respuesta a JSON
+    })
+    .then(
+      successSwal("Usuario Registrado", "Ya puedes acceder a la tienda")
+    )
+    .catch((error) => {
+      errorSwal("Error", error);
+    });
+  }
+
+    /*
     let url = "php/coop24.php";
     var solicitud = new XMLHttpRequest();
     solicitud.addEventListener("load", function () {
@@ -115,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     solicitud.open("POST", url, true);
     solicitud.send(datos); //del FormData
   }
+  */
 
   function comprobarCorreo(campo) {
     let correcto = true;

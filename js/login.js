@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Id usuario login: " + idUsuario);
             sessionStorage.setItem("nombreUsuario", nombreUsuario); 
             sessionStorage.setItem("idUsuario", idUsuario); 
-            alert("Usuario registrado");
             Swal.fire({
               position: "top",
               icon: "success",
