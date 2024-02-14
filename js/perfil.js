@@ -92,6 +92,7 @@ const mostrarDatos = (perfil) => {
   let imageArchivo = document.getElementById("imgfile");
 
   name.value = perfil[0].nombre;
+
   ape.value = perfil[0].apellidos;
   email.value = perfil[0].email;
   contra.value = perfil[0].password;
@@ -115,58 +116,6 @@ const mostrarDatos = (perfil) => {
   });
 };
 
-///////////////////////////////////////////////////////////////
-/*
-function limpiarErrores(errores, errorContainer) {
-  // Limpiar mensajes de error anteriores
-  errores.innerHTML = "";
-  errorContainer.style.display = "none";
-}
-
-function mostrarError(mens, campo) {
-  let errorMessage = document.getElementById("errorMessage");
-  let errorContainer = document.getElementById("error");
-  errorMessage.innerHTML = mens;
-  errorContainer.style.display = "flex";
-  errorContainer.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-    inline: "nearest",
-  });
-  campo.focus();
-}
-
-function validaObligatorio(campo) {
-  let correcto = true;
-  //var nomexpreg = /^([a-zA-Z\s-]{2,15})$/; //entre 2 y 15 carácteres
-  if (campo.value === "" || campo.value === null) {
-    mostrarError("Debe introducir " + campo.name, campo);
-    correcto = false;
-  }
-  return correcto;
-}
-
-function validaEmail(campo) {
-  let correcto = true;
-  var emailexpreg = /[\w-\.]{3,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-  if (!emailexpreg.test(campo.value)) {
-    mostrarError("Debe introducir un correo válido", campo);
-    correcto = false;
-  }
-  return correcto;
-}
-
-function repetirContrasenya(campo1, campo2) {
-  let correcto = true;
-  if (campo1.value !== campo2.value) {
-    campo2.value = "";
-    mostrarError("Las contraseñas no coinciden", campo2);
-    correcto = false;
-  }
-  return correcto;
-}*/
-
-////////////////////////////////////////////////////////////
 function enviar(idUsuario, name, ape, email, contra, file) {
   let imageArchivo = document.getElementById("imgfile");
   var datos = new FormData();
@@ -189,6 +138,7 @@ function enviar(idUsuario, name, ape, email, contra, file) {
       if (solicitud.status === 200) {
         if (solicitud.responseText.trim() === "ok") {
           alert("Datos registrados");
+          sessionStorage.setItem("nombreUsuario", name.value); 
           Swal.fire({
             title: "Usuario Registrado",
             text: "datos modificados",

@@ -1,6 +1,6 @@
 
 "use strict";
-import { limpiarErrores, validaObligatorio, validaEmail, successSwalTimer } from "./valida.js";
+import { limpiarErrores, validaObligatorio, validaEmail, successSwalTimer, errorSwal, errorSwalPag } from "./valida.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   let email = document.getElementById("email");
@@ -29,15 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
     datos.append("password", contra.value);
     fetch("php/coop24.php", { method: "POST", body: datos })
     .then((response) => {
-      if (!response.ok) {
-        errorSwal("Error", "Error en la solicitud")
+        console.log("Estado de la solicitud: ", response.status);
+        if (response.ok) {
+            return response.text(); // Obtener el texto de la respuesta
+        } else {
+            errorSwal("Error en la solicitud", response.status);
+        }
+    }).then((text) => {
+      if (text.trim() !== "error") {
+        let respuesta = JSON.parse(text); // Convertir a JSON
+        sessionStorage.setItem("nombreUsuario", respuesta[0].nombre); 
+        sessionStorage.setItem("idUsuario", respuesta[0].id); 
+        successSwalTimer("Usuario Registrado", "Ya puedes entrar en la tienda");
+      } else {
+        errorSwalPag("Usuario no registrado","Debes registrarte","registro.html")
       }
-      return response.json(); // convertir respuesta a JSON
-    }).then((data) => {
-      sessionStorage.setItem("nombreUsuario", data[0].nombre); 
-      sessionStorage.setItem("idUsuario", data[0].id); 
-      alert("id: "+sessionStorage.getItem("idUsuario"));
-      successSwalTimer("Usuario Registrado", "Ya puedes entrar en la tienda");
     })
     .catch((error) => {
       errorSwal("Error", error);

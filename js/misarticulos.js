@@ -1,17 +1,12 @@
 "use strict";
 import { crearElemento, crearElementoTexto } from "./crearElement.js";
-import {
-  limpiarErrores,
-  validaObligatorio,
-  validaSelect,
-  errorNoRegistro,
-} from "./valida.js";
+import {limpiarErrores,validaObligatorio,validaSelect,errorNoRegistro} from "./valida.js";
 
-if (sessionStorage.getItem("nombreUsuario") == "") {
+if (sessionStorage.getItem("idUsuario") == "") {
   errorNoRegistro();
 } else {
   document.addEventListener("DOMContentLoaded", function () {
-    console.log(sessionStorage.getItem("nombreUsuario"));
+    console.log(sessionStorage.getItem("idUsuario"));
     let nombre = document.getElementById("nombre");
     nombre.innerHTML = sessionStorage.getItem("nombreUsuario");
     let contenedor = document.getElementById("articulos");

@@ -52,8 +52,41 @@ document.addEventListener("DOMContentLoaded", function () {
       errorSwal("Error", error);
     });
   }
+});
+    
+/*
+  function comprobarCorreo(campo) {
+    let correcto = true;
+    var datos = new FormData();
+    datos.append("opcion", "SE");
+    datos.append("email", campo.value);
 
-    /*
+    let url = "php/coop24.php";
+    var solicitud = new XMLHttpRequest();
+
+    solicitud.addEventListener("load", function () {
+      try {
+        if (solicitud.status === 200) {
+          if (solicitud.responseText.trim() !== "error") {
+            mostrarError("Ese correo ya ha sido registrado", campo);
+            correcto = false;
+          } else {
+            console.log("Usuario no registrado");
+          }
+        } else {
+          throw new Error("Error en la solicitud: " + solicitud.status);
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+    solicitud.open("POST", url, true);
+    solicitud.send(datos); //del FormData
+    return correcto;
+  }
+*/
+
+/*
     let url = "php/coop24.php";
     var solicitud = new XMLHttpRequest();
     solicitud.addEventListener("load", function () {
@@ -86,34 +119,3 @@ document.addEventListener("DOMContentLoaded", function () {
     solicitud.send(datos); //del FormData
   }
   */
-
-  function comprobarCorreo(campo) {
-    let correcto = true;
-    var datos = new FormData();
-    datos.append("opcion", "SE");
-    datos.append("email", campo.value);
-
-    let url = "php/coop24.php";
-    var solicitud = new XMLHttpRequest();
-
-    solicitud.addEventListener("load", function () {
-      try {
-        if (solicitud.status === 200) {
-          if (solicitud.responseText.trim() !== "error") {
-            mostrarError("Ese correo ya ha sido registrado", campo);
-            correcto = false;
-          } else {
-            console.log("Usuario no registrado");
-          }
-        } else {
-          throw new Error("Error en la solicitud: " + solicitud.status);
-        }
-      } catch (error) {
-        alert(error.message);
-      }
-    });
-    solicitud.open("POST", url, true);
-    solicitud.send(datos); //del FormData
-    return correcto;
-  }
-});
