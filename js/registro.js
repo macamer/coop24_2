@@ -1,5 +1,5 @@
 'use strict';
-import { validaObligatorio, validaEmail, repetirContrasenya, errorSwal, successSwal} from "./valida.js";
+import { limpiarErrores, validaObligatorio, validaEmail, repetirContrasenya, errorSwal,errorSwalPag, successSwal} from "./valida.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   let name = document.getElementById("name");
@@ -39,17 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
     datos.append("repassword", contra2.value);
 
     fetch("php/coop24.php", { method: "POST", body: datos })
-    .then((response) => {
-      if (!response.ok) {
-        errorSwal("Error", "error en la solicitud");
+    .then((data) => {
+      if (data.ok) {
+        successSwal("Usuario Registrado", "Ya puedes entrar en la tienda");
+      } else {
+        errorSwalPag("Error","No sa he podido registrar","registro.html")
       }
-      return response.json(); // convertir respuesta a JSON
     })
-    .then(
-      successSwal("Usuario Registrado", "Ya puedes acceder a la tienda")
-    )
     .catch((error) => {
       errorSwal("Error", error);
+      console.error("Error: ", error);
     });
   }
 });
