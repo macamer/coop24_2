@@ -1,5 +1,5 @@
 "use strict";
-import {limpiarErrores, validaObligatorio, validaSelect, errorNoRegistro, errorSwal, successSwal, limpiarStorage} from "./valida.js";
+import {limpiarErrores, validaObligatorio, validaSelect, errorNoRegistro, errorSwal, successSwal, limpiarStorage, precioDecimales, precioDecimales} from "./valida.js";
 
 if (sessionStorage.getItem("nombreUsuario") == "") {
   errorNoRegistro();
@@ -32,13 +32,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
     let descr = document.getElementById("descr");
 
     //PONER EL PRECIO CON DOS DECIMALES
-    precio.addEventListener("blur", function() {
-      let valor = parseFloat(this.value);
-      if (!isNaN(valor)) {
-        valor = valor.toFixed(2);
-        this.value = valor;
-      }
-    });
+    precioDecimales(precio);
 
     window.addEventListener("load", () => {
       let btnEnviar = document.getElementById("enviar");

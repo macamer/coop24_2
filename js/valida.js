@@ -126,3 +126,13 @@ export function successSwalTimer(titulo, mensaje){
   }).then((result) => {document.querySelector("form").submit();});
 
 }
+
+export function precioDecimales(precio){
+  precio.addEventListener("blur", function() {
+    let valor = parseFloat(this.value);
+    if (!isNaN(valor)) {
+      valor = valor.toFixed(2);
+      this.value = valor;
+    }
+  });
+}

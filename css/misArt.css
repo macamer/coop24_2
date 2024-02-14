@@ -1,0 +1,79 @@
+h3.display-6 {
+    color: #55293c
+}
+section {
+    padding: 60px 0;
+}
+
+/* Estilos para los botones */
+.btn {
+    font-weight: 600; /* Aumenté el grosor de la fuente */
+}
+
+/* Estilos para las imágenes */
+.img-fluid {
+    max-width: 100%; 
+    height: auto; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+/* Estilos para la paginación */
+#paginas {
+    margin-top: 2rem; /* Espaciado superior */
+}
+
+/* Estilos adicionales */
+.container {
+    max-width: 1200px; /* Ancho máximo del contenedor */
+}
+.fila {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 20px; /* Ajusta el espacio entre filas según tus necesidades */
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+.contenedorP {
+    max-height: 16em;
+    width: 15em;
+    display: flex;
+    flex-direction: column;
+
+}
+.producto{
+    text-align: center;
+    padding: 1em;
+    background-color: #ffffff;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar horizontalmente */
+  justify-content: center; /* Centrar verticalmente */
+}
+.nombre{
+    margin-bottom: 0.3rem;
+}
+
+img {
+    max-height: 7em;
+}
+#compra,
+.btn-secundario {
+    background-color: #55293c;
+    color:#ffffff;
+}
+.btn-principal{
+    background-color: #d683a3;
+    color:#ffffff;
+}
+#compra:hover,
+.btn-secundario:hover,
+.btn-principal:hover{
+    background-color: #9b2558;
+    color: #ffffff;
+}
+
+
+
