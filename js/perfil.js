@@ -1,42 +1,57 @@
-document.addEventListener("DOMContentLoaded", function () {
-  let nombre = document.getElementById("nombre");
-  nombre.innerHTML = localStorage.getItem("nombreUsuario");
+'use strict';
+import { errorNoRegistro, validaObligatorio, validaEmail, repetirContrasenya} from "./valida.js";
 
-  //window.addEventListener("load", () => {
-  let btnEnviar = document.getElementById("enviar");
-  let btnCancelar = document.getElementById("cancel");
-  let errorMessage = document.getElementById("errorMessage");
-  let errorContainer = document.getElementById("error");
-  let name = document.getElementById("name");
-  let ape = document.getElementById("ape");
-  let email = document.getElementById("email");
-  let contra = document.getElementById("contra");
-  let contra2 = document.getElementById("contra2");
-  let idUsuario = localStorage.getItem("idUsuario");
-  let file = document.getElementById("file");
+if (sessionStorage.getItem("nombreUsuario") == "") {
+  errorNoRegistro();
+} else {
+  document.addEventListener("DOMContentLoaded", function () {
+    let nombre = document.getElementById("nombre");
+    nombre.innerHTML = sessionStorage.getItem("nombreUsuario");
 
-  mostrarPerfil(idUsuario);
+    //window.addEventListener("load", () => {
+    let btnEnviar = document.getElementById("enviar");
+    let btnCancelar = document.getElementById("cancel");
+    let errorMessage = document.getElementById("errorMessage");
+    let errorContainer = document.getElementById("error");
+    let name = document.getElementById("name");
+    let ape = document.getElementById("ape");
+    let email = document.getElementById("email");
+    let contra = document.getElementById("contra");
+    let contra2 = document.getElementById("contra2");
+    let idUsuario = sessionStorage.getItem("idUsuario");
+    let file = document.getElementById("file");
 
-  //PULSAR BOTON
-  btnEnviar.addEventListener("click", (e) => {
-    e.preventDefault();
-    limpiarErrores(errorMessage, errorContainer);
-    if (validaObligatorio(name))
-      if (validaObligatorio(ape))
-        if (validaEmail(email))
-          if (validaObligatorio(contra))
-            if (repetirContrasenya(contra, contra2)) {
-              //if (comprobarCorreo(email))
-              enviar(idUsuario, name, ape, email, contra, file);
-            }
+    mostrarPerfil(idUsuario);
+
+    //PULSAR BOTON ENVIAR
+    btnEnviar.addEventListener("click", (e) => {
+      e.preventDefault();
+      limpiarErrores(errorMessage, errorContainer);
+      if (validaObligatorio(name))
+        if (validaObligatorio(ape))
+          if (validaEmail(email))
+            if (validaObligatorio(contra))
+              if (repetirContrasenya(contra, contra2)) {
+                //if (comprobarCorreo(email))
+                enviar(idUsuario, name, ape, email, contra, file);
+              }
+    });
+
+    //boton cancelar
+    btnCancelar.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.reload();
+    });
+
+    //boton logout
+    document.getElementById("logout").addEventListener('click', (e) => {
+      e.preventDefault();
+      sessionStorage.setItem("nombreUsuario", "");
+      sessionStorage.setItem("idUsuario", "");
+      window.location.href = "index.html";
+    });
   });
-
-  btnCancelar.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.location.reload();
-  });
-});
-
+}
 ////////////////////////////////////////////////////
 function mostrarPerfil(idUsuario) {
   var datos = new FormData();
@@ -100,6 +115,7 @@ const mostrarDatos = (perfil) => {
 };
 
 ///////////////////////////////////////////////////////////////
+/*
 function limpiarErrores(errores, errorContainer) {
   // Limpiar mensajes de error anteriores
   errores.innerHTML = "";
@@ -147,7 +163,7 @@ function repetirContrasenya(campo1, campo2) {
     correcto = false;
   }
   return correcto;
-}
+}*/
 
 ////////////////////////////////////////////////////////////
 function enviar(idUsuario, name, ape, email, contra, file) {
@@ -196,7 +212,7 @@ function enviar(idUsuario, name, ape, email, contra, file) {
     }
   });
   solicitud.open("POST", url, true);
-  solicitud.send(datos); 
+  solicitud.send(datos);
 }
 
 //////////////////////////////////////////////

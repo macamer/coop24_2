@@ -45,3 +45,31 @@ export function validaSelect(selector) {
   }
   return correcto;
 }
+
+export function errorNoRegistro(){
+  Swal.fire({
+    icon: "error",
+    title: "Oops...",
+    text: "No puedes entrar sin Registrarte",
+    showCancelButton: true,
+    confirmButtonText: "Registrar",
+    cancelButtonText: "Login"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "registro.html";
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      window.location.href = "login.html";
+    }
+  });
+  
+}
+
+export function repetirContrasenya(campo1, campo2) {
+  let correcto = true;
+  if (campo1.value !== campo2.value) {
+    campo2.value = "";
+    mostrarError("Las contraseñas no coinciden", campo2);
+    correcto = false;
+  }
+  return correcto;
+}

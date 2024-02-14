@@ -83,8 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
             let idUsuario = respuesta[0].id;
             console.log("Nombre usuario login: " + nombreUsuario);
             console.log("Id usuario login: " + idUsuario);
-            localStorage.setItem("nombreUsuario", nombreUsuario); //almacenar localmente el nombre
-            localStorage.setItem("idUsuario", idUsuario); //almacenar localmente el id
+            sessionStorage.setItem("nombreUsuario", nombreUsuario); //almacenar localmente el nombre
+            sessionStorage.setItem("idUsuario", idUsuario); //almacenar localmente el id
             alert("Usuario registrado");
             Swal.fire({
               title: "Usuario Correcto",
