@@ -92,3 +92,21 @@ export function successSwal(titulo, mensaje){
         document.querySelector("form").submit();
     }})
 }
+
+export function successSwalTimer(titulo, mensaje){
+  Swal.fire({
+    position: "top",
+    icon: "success",
+    title: titulo,
+    text: mensaje,
+    width: 500,
+    padding: "2em",
+
+    showConfirmButton: false,
+    timer: 1500,
+    backdrop: `
+    rgba(0, 0, 0, 0.5)
+  `,
+  }).then((result) => {document.querySelector("form").submit();});
+
+}

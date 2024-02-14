@@ -1,9 +1,8 @@
 
 "use strict";
-import { limpiarErrores, validaObligatorio, validaEmail } from "./valida.js";
+import { limpiarErrores, validaObligatorio, validaEmail, successSwalTimer } from "./valida.js";
 
 document.addEventListener("DOMContentLoaded", function () {
-  
   let email = document.getElementById("email");
   let contra = document.getElementById("contra");
 
@@ -81,19 +80,10 @@ document.addEventListener("DOMContentLoaded", function () {
             let respuesta = JSON.parse(solicitud.responseText); //converit a JSON
             let nombreUsuario = respuesta[0].nombre;
             let idUsuario = respuesta[0].id;
-            console.log("Nombre usuario login: " + nombreUsuario);
-            console.log("Id usuario login: " + idUsuario);
+
             sessionStorage.setItem("nombreUsuario", nombreUsuario); 
             sessionStorage.setItem("idUsuario", idUsuario); 
-            Swal.fire({
-              position: "top",
-              icon: "success",
-              title: "Usuario correcto",
-              showConfirmButton: false,
-              timer: 1500
-          }).then((result) => {
-                  document.querySelector("form").submit();
-          });
+            successSwalTimer("Usuario Registrado", "Ya puedes entrar en la tienda");
           } else {
             Swal.fire({
               icon: "error",

@@ -1,5 +1,5 @@
 'use strict';
-import { errorNoRegistro, validaObligatorio, validaEmail, repetirContrasenya} from "./valida.js";
+import { limpiarErrores, errorNoRegistro, validaObligatorio, validaEmail, repetirContrasenya} from "./valida.js";
 
 if (sessionStorage.getItem("nombreUsuario") == "") {
   errorNoRegistro();
@@ -7,8 +7,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
   document.addEventListener("DOMContentLoaded", function () {
     let nombre = document.getElementById("nombre");
     nombre.innerHTML = sessionStorage.getItem("nombreUsuario");
-
-    //window.addEventListener("load", () => {
+    //recoger los datos
     let btnEnviar = document.getElementById("enviar");
     let btnCancelar = document.getElementById("cancel");
     let errorMessage = document.getElementById("errorMessage");
@@ -88,12 +87,14 @@ const mostrarDatos = (perfil) => {
   let name = document.getElementById("name");
   let ape = document.getElementById("ape");
   let email = document.getElementById("email");
+  let contra = document.getElementById("contra");
   let inputArchivo = document.getElementById("file");
   let imageArchivo = document.getElementById("imgfile");
 
   name.value = perfil[0].nombre;
   ape.value = perfil[0].apellidos;
   email.value = perfil[0].email;
+  contra.value = perfil[0].password;
 
   //visualizar imagen
 
