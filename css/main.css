@@ -33,7 +33,7 @@ section {
 .producto{
     text-align: center;
     padding: 1em;
-    background-color: azure;
+    background-color: #ffffff;
     flex-grow: 1;
     flex-wrap: wrap;
     display: flex;
@@ -56,3 +56,19 @@ body>#vender{
 #vendedor{
     background-color: rgb(150, 189, 190);;
 }
+#compra,
+.btn-principal {
+    background-color: #9b5776;
+    color:#ffffff;
+}
+#compra:hover,
+.btn-secundario:hover,
+.btn-principal:hover{
+    background-color: #82a8b3;
+}
+
+.btn-secundario{
+    background-color: #bb738f;
+    color:#ffffff;
+}
+

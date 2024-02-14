@@ -79,7 +79,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
       }
       //contenedor para cada producto
       const contenedorP = crearElemento("div", filaContainer);
-      contenedorP.classList.add("contenedorP","border","border-secondary","rounded","border-2");
+      contenedorP.classList.add("contenedorP");
 
       let producto = crearElemento("div", contenedorP);
       producto.classList.add("producto", "container");
@@ -100,7 +100,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
       precio.classList.add("precio");
 
       let botonCompra = crearElemento("button", producto);
-      botonCompra.classList.add("btn", "btn-info");
+      botonCompra.classList.add("btn");
       botonCompra.textContent = "Comprar";
       botonCompra.id = "compra";
       botonCompra.addEventListener("click", (e) => {
@@ -119,8 +119,8 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
     for (let i = 1; i <= totalPaginas; i++) {
       let btn = crearElementoTexto(i, "button", divBtn);
       btn.classList.add("btn", "btn-paginator");
-      if (i == pagina) btn.classList.add("btn-secondary");
-      else btn.classList.add("btn-info");
+      if (i == pagina) btn.classList.add("btn-secundario");
+      else btn.classList.add("btn-principal");
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         mostrarArticulos(articulos, i);
