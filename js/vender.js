@@ -11,14 +11,13 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
 } else {
   document.addEventListener("DOMContentLoaded", function () {
     let nombre = document.getElementById("nombre");
-    nombre.innerHTML = localStorage.getItem("nombreUsuario");
+    nombre.innerHTML = sessionStorage.getItem("nombreUsuario");
     // Establecer el valor en el input
     document.getElementById("vendedor").value =
-      localStorage.getItem("nombreUsuario");
-    let idUsuario = localStorage.getItem("idUsuario");
+      sessionStorage.getItem("nombreUsuario");
 
-    console.log(localStorage.getItem("idUsuario"));
-    console.log("nombre usuario: " + localStorage.getItem("nombreUsuario"));
+    console.log(sessionStorage.getItem("idUsuario"));
+    console.log("nombre usuario: " + sessionStorage.getItem("nombreUsuario"));
 
     //visualizar imagen
     let inputArchivo = document.getElementById("file");
@@ -60,7 +59,6 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
     
     //boton logout
     window.addEventListener("load", () => {
-      enviar();
       document.getElementById("logout").addEventListener('click', (e) => {
         e.preventDefault();
         sessionStorage.setItem("nombreUsuario", "");
@@ -118,7 +116,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
       datos.append("precio", precio.value);
       datos.append("imagen", file.files[0]);
       datos.append("descripcion", descr.value);
-      datos.append("vendedor", localStorage.getItem("idUsuario"));
+      datos.append("vendedor", sessionStorage.getItem("idUsuario"));
 
       let url = "php/coop24.php";
       var solicitud = new XMLHttpRequest();

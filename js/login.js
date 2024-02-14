@@ -83,17 +83,17 @@ document.addEventListener("DOMContentLoaded", function () {
             let idUsuario = respuesta[0].id;
             console.log("Nombre usuario login: " + nombreUsuario);
             console.log("Id usuario login: " + idUsuario);
-            sessionStorage.setItem("nombreUsuario", nombreUsuario); //almacenar localmente el nombre
-            sessionStorage.setItem("idUsuario", idUsuario); //almacenar localmente el id
+            sessionStorage.setItem("nombreUsuario", nombreUsuario); 
+            sessionStorage.setItem("idUsuario", idUsuario); 
             alert("Usuario registrado");
             Swal.fire({
-              title: "Usuario Correcto",
-              text: "puedes acceder a la tienda",
-              icon: "success"
+              position: "top",
+              icon: "success",
+              title: "Usuario correcto",
+              showConfirmButton: false,
+              timer: 1500
           }).then((result) => {
-              if (result.isConfirmed) {
                   document.querySelector("form").submit();
-              }
           });
           } else {
             Swal.fire({

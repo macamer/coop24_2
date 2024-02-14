@@ -1,22 +1,39 @@
 "use strict";
 import { crearElemento, crearElementoTexto } from "./crearElement.js";
-import { limpiarErrores, validaObligatorio, validaSelect } from "./valida.js";
+import {
+  limpiarErrores,
+  validaObligatorio,
+  validaSelect,
+  errorNoRegistro,
+} from "./valida.js";
 
-document.addEventListener("DOMContentLoaded", function () {
-  let nombre = document.getElementById("nombre");
-  nombre.innerHTML = localStorage.getItem("nombreUsuario");
-  let contenedor = document.getElementById("articulos");
+if (sessionStorage.getItem("nombreUsuario") == "") {
+  errorNoRegistro();
+} else {
+  document.addEventListener("DOMContentLoaded", function () {
+    console.log(sessionStorage.getItem("nombreUsuario"));
+    let nombre = document.getElementById("nombre");
+    nombre.innerHTML = sessionStorage.getItem("nombreUsuario");
+    let contenedor = document.getElementById("articulos");
 
-  window.addEventListener("load", () => {
-    jsonArticulos(contenedor);
+    window.addEventListener("load", () => {
+      jsonArticulos(contenedor);
+    });
+
+    //boton logout
+    document.getElementById("logout").addEventListener("click", (e) => {
+      e.preventDefault();
+      sessionStorage.setItem("nombreUsuario", "");
+      sessionStorage.setItem("idUsuario", "");
+      window.location.href = "index.html";
+    });
   });
-});
-
+}
 
 ////////////////////////////////////////////////////////////////
 ////MOSTRAR ARTICULOS -->
 function jsonArticulos(contenedor) {
-  let idUsuario = localStorage.getItem("idUsuario");
+  let idUsuario = sessionStorage.getItem("idUsuario");
   var datos = new FormData();
   datos.append("opcion", "SV");
   datos.append("idsocio", idUsuario);
@@ -57,7 +74,6 @@ const mostrarArticulos = (articulos, contenedor) => {
   contenedor.appendChild(filaContainer);
 
   let contadorProductos = 0;
-
 
   //////////////////////////////////////////////
   /////ARTICULOS EN VENTA -->
@@ -129,7 +145,6 @@ const mostrarArticulos = (articulos, contenedor) => {
     contadorProductos++;
   });
 
-
   //////////////////////////////////////////////
   ///////ARTICULOS VENDIDOS -->
   artVendidos.forEach((articulo) => {
@@ -186,7 +201,6 @@ const mostrarArticulos = (articulos, contenedor) => {
     contadorProductos++;
   });
 };
-
 
 ///////////////////////////////////////////////
 ///BORRAR --->
@@ -245,7 +259,6 @@ function borrarArticulo(idarticulo) {
   solicitud.send(datos);
 }
 
-
 //////////////////////////////////////////////////////
 //MODIFICAR ART --->
 function modArticulo(idarticulo) {
@@ -254,7 +267,7 @@ function modArticulo(idarticulo) {
   document.getElementById("modSection").style = "display:block;";
 
   // Establecer el valor en el input del VENDEDOR
-  document.getElementById("vendedor").value = localStorage.getItem("nombreUsuario");
+  document.getElementById("vendedor").value = sessionStorage.getItem("nombreUsuario");
   //BOTONES
   let btnCancelarMod = document.getElementById("cancelMod");
   let btnEnviarMod = document.getElementById("enviarMod");
@@ -270,7 +283,6 @@ function modArticulo(idarticulo) {
 
   enviarSelect(selector);
   mostrarArtMod(idarticulo);
-  
 
   btnCancelarMod.addEventListener("click", (e) => {
     e.preventDefault();
@@ -279,17 +291,16 @@ function modArticulo(idarticulo) {
     limpiarErrores(errorMessage, errorContainer);
   });
 
-  
   btnEnviarMod.addEventListener("click", (e) => {
     e.preventDefault();
-    
+
     limpiarErrores(errorMessage, errorContainer);
     if (validaSelect(selector))
-        if (validaObligatorio(articulo))
-          if (validaObligatorio(precio))
-            if (validaObligatorio(descr)) {
-              enviar(idarticulo, articulo, selector, descr, precio, file)
-            }
+      if (validaObligatorio(articulo))
+        if (validaObligatorio(precio))
+          if (validaObligatorio(descr)) {
+            enviar(idarticulo, articulo, selector, descr, precio, file);
+          }
   });
 
   ////////////////////////////////////////////////////
@@ -342,25 +353,23 @@ function modArticulo(idarticulo) {
     //file.src = art[0].imagen;
     descr.value = art[0].descripcion;
 
-  //Visualiza imagen ARTICULO
-  imageArchivo.src = "archivos/" + art[0].imagen;
-  imageArchivo.name = art[0].imagen;
-  console.log(art[0].imagen);
-  console.log("name: " + imageArchivo.name);
-  console.log("src: " + imageArchivo.src);
-  inputArchivo.addEventListener("change", function () {
-    let archivo = this.files[0];
-    if (archivo.type.match("image.*")) {
-      let tmpPath = URL.createObjectURL(archivo);
-      imageArchivo.setAttribute("src", tmpPath);
-      imageArchivo.name = archivo.name;
-      console.log("name change: " + archivo.name);
-    } else {
-      alert("No es un archivo de imagen");
-    }
-  });
-
-
+    //Visualiza imagen ARTICULO
+    imageArchivo.src = "archivos/" + art[0].imagen;
+    imageArchivo.name = art[0].imagen;
+    console.log(art[0].imagen);
+    console.log("name: " + imageArchivo.name);
+    console.log("src: " + imageArchivo.src);
+    inputArchivo.addEventListener("change", function () {
+      let archivo = this.files[0];
+      if (archivo.type.match("image.*")) {
+        let tmpPath = URL.createObjectURL(archivo);
+        imageArchivo.setAttribute("src", tmpPath);
+        imageArchivo.name = archivo.name;
+        console.log("name change: " + archivo.name);
+      } else {
+        alert("No es un archivo de imagen");
+      }
+    });
   };
 
   function enviarSelect() {
@@ -404,55 +413,54 @@ function modArticulo(idarticulo) {
     console.log("Valor seleccionado: " + selector.value);
   }
 
-
   ////////////////////////////////////////////////////////////
   ///ENVIAR DATOS PARA MODIFICAR -->
-function enviar(idarticulo, articulo, categoria, descr, precio, file) {
-  let imageArchivo = document.getElementById("imgfile");
-  var datos = new FormData();
-  datos.append("opcion", "MA");
-  datos.append("idarticulo", idarticulo);
-  datos.append("categoria", categoria.value);
-  datos.append("nombre", articulo.value);
-  datos.append("descripcion", descr.value);
-  datos.append("precio", precio.value);
-  if (file.files[0] == null) {
-    datos.append("foto", imageArchivo.name);
-  } else {
-    datos.append("foto", file.files[0]);
-  }
-
-  let url = "php/coop24.php";
-  var solicitud = new XMLHttpRequest();
-  solicitud.addEventListener("load", function () {
-    try {
-      if (solicitud.status === 200) {
-        if (solicitud.responseText.trim() === "ok") {
-          alert("Datos registrados");
-          Swal.fire({
-            title: "Artículo modificado",
-            text: "datos del artículo modificados",
-            icon: "success",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              document.querySelector("form").submit();
-            }
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error de registro",
-            text: "No se ha podido modificar el artículo",
-          });
-        }
-      } else {
-        throw new Error("Error en la solicitud: " + solicitud.status);
-      }
-    } catch (error) {
-      alert(error.message);
+  function enviar(idarticulo, articulo, categoria, descr, precio, file) {
+    let imageArchivo = document.getElementById("imgfile");
+    var datos = new FormData();
+    datos.append("opcion", "MA");
+    datos.append("idarticulo", idarticulo);
+    datos.append("categoria", categoria.value);
+    datos.append("nombre", articulo.value);
+    datos.append("descripcion", descr.value);
+    datos.append("precio", precio.value);
+    if (file.files[0] == null) {
+      datos.append("foto", imageArchivo.name);
+    } else {
+      datos.append("foto", file.files[0]);
     }
-  });
-  solicitud.open("POST", url, true);
-  solicitud.send(datos); 
-}
+
+    let url = "php/coop24.php";
+    var solicitud = new XMLHttpRequest();
+    solicitud.addEventListener("load", function () {
+      try {
+        if (solicitud.status === 200) {
+          if (solicitud.responseText.trim() === "ok") {
+            alert("Datos registrados");
+            Swal.fire({
+              title: "Artículo modificado",
+              text: "datos del artículo modificados",
+              icon: "success",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                document.querySelector("form").submit();
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error de registro",
+              text: "No se ha podido modificar el artículo",
+            });
+          }
+        } else {
+          throw new Error("Error en la solicitud: " + solicitud.status);
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+    solicitud.open("POST", url, true);
+    solicitud.send(datos);
+  }
 }
