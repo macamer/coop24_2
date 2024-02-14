@@ -49,11 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let correcto = true;
     //var nomexpreg = /^([a-zA-Z\s-]{2,15})$/; //entre 2 y 15 carácteres
     if (campo.value === "" || campo.value === null) {
-      /*
-      errorMessage.innerHTML = "Debe introducir " + campo.name;
-      errorContainer.style.display = "flex";
-      errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-      campo.focus();*/
       mostrarError("Debe introducir " + campo.name, campo);
       correcto = false;
     }
@@ -95,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         if (solicitud.status === 200) {
           if (solicitud.responseText.trim() === "ok") {
-            //alert("Datos registrados");
             Swal.fire({
               title: "Usuario Registrado",
               text: "ya puedes acceder a la tienda",

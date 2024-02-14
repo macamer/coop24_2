@@ -73,3 +73,22 @@ export function repetirContrasenya(campo1, campo2) {
   }
   return correcto;
 }
+
+export function errorSwal(titulo, mensaje){
+  Swal.fire({
+    icon: "error",
+    title: titulo,
+    text: mensaje,
+  })
+}
+
+export function successSwal(titulo, mensaje){
+  Swal.fire({
+    title: titulo,
+    text: mensaje,
+    icon: "success",
+  }).then((result) => {
+    if (result.isConfirmed) {
+        document.querySelector("form").submit();
+    }})
+}
