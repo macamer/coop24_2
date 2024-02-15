@@ -1,5 +1,5 @@
 'use strict';
-import { limpiarErrores, errorNoRegistro, validaObligatorio, validaEmail, repetirContrasenya} from "./valida.js";
+import { limpiarErrores, errorNoRegistro, validaObligatorio, validaEmail, repetirContrasenya, limpiarStorage, errorSwal, successSwal} from "./valida.js";
 
 if (sessionStorage.getItem("nombreUsuario") == "") {
   errorNoRegistro();
@@ -18,9 +18,21 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
     let contra = document.getElementById("contra");
     let contra2 = document.getElementById("contra2");
     let idUsuario = sessionStorage.getItem("idUsuario");
-    let file = document.getElementById("file");
+    let inputArchivo = document.getElementById("file");
 
     mostrarPerfil(idUsuario);
+    //cambiar imagen
+    inputArchivo.addEventListener("change", function () {
+      let archivo = this.files[0];
+      if (archivo.type.match("image.*")) {
+        let tmpPath = URL.createObjectURL(archivo);
+        imageArchivo.setAttribute("src", tmpPath);
+        imageArchivo.name = archivo.name;
+      } else {
+        errorSwal("No es un archivo de imagen","Elige otro formato");
+        this.value = null;
+      }
+    });
 
     //PULSAR BOTON ENVIAR
     btnEnviar.addEventListener("click", (e) => {
@@ -30,10 +42,9 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
         if (validaObligatorio(ape))
           if (validaEmail(email))
             if (validaObligatorio(contra))
-              if (repetirContrasenya(contra, contra2)) {
+              if (repetirContrasenya(contra, contra2)) 
                 //if (comprobarCorreo(email))
-                enviar(idUsuario, name, ape, email, contra, file);
-              }
+                enviar(idUsuario, name, ape, email, contra, inputArchivo);
     });
 
     //boton cancelar
@@ -45,9 +56,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
     //boton logout
     document.getElementById("logout").addEventListener('click', (e) => {
       e.preventDefault();
-      sessionStorage.setItem("nombreUsuario", "");
-      sessionStorage.setItem("idUsuario", "");
-      window.location.href = "index.html";
+      limpiarStorage();
     });
   });
 }
@@ -63,7 +72,6 @@ function mostrarPerfil(idUsuario) {
   solicitud.addEventListener("load", function () {
     try {
       if (solicitud.status === 200) {
-        console.log(solicitud.responseText);
         if (solicitud.responseText.trim() !== null) {
           mostrarDatos(JSON.parse(solicitud.responseText));
         } else {
@@ -88,32 +96,16 @@ const mostrarDatos = (perfil) => {
   let ape = document.getElementById("ape");
   let email = document.getElementById("email");
   let contra = document.getElementById("contra");
-  let inputArchivo = document.getElementById("file");
   let imageArchivo = document.getElementById("imgfile");
 
   name.value = perfil[0].nombre;
-
   ape.value = perfil[0].apellidos;
   email.value = perfil[0].email;
   contra.value = perfil[0].password;
 
   //visualizar imagen
-
   imageArchivo.src = "socios/" + perfil[0].foto;
   imageArchivo.name = perfil[0].foto;
-  console.log("name: " + imageArchivo.name);
-  console.log("src: " + imageArchivo.src);
-  inputArchivo.addEventListener("change", function () {
-    archivo = this.files[0];
-    if (archivo.type.match("image.*")) {
-      let tmpPath = URL.createObjectURL(archivo);
-      imageArchivo.setAttribute("src", tmpPath);
-      imageArchivo.name = archivo.name;
-      console.log("name change: " + archivo.name);
-    } else {
-      alert("No es un archivo de imagen");
-    }
-  });
 };
 
 function enviar(idUsuario, name, ape, email, contra, file) {
@@ -125,11 +117,8 @@ function enviar(idUsuario, name, ape, email, contra, file) {
   datos.append("apellidos", ape.value);
   datos.append("email", email.value);
   datos.append("password", contra.value);
-  if (file.files[0] == null) {
-    datos.append("foto", imageArchivo.name);
-  } else {
-    datos.append("foto", file.files[0]);
-  }
+  if (file.files[0] == null) datos.append("foto", imageArchivo.name);
+  else datos.append("foto", file.files[0]);
 
   let url = "php/coop24.php";
   var solicitud = new XMLHttpRequest();

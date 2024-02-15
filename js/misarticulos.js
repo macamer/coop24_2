@@ -343,7 +343,7 @@ function modArticulo(idarticulo) {
           if (solicitud.responseText.trim() !== "error") {
             mostrarCategoria(JSON.parse(solicitud.responseText));
           } else {
-            alert("No hay Artículos");
+            errorSwal("Error","No hay categorias");
           }
         } else {
           throw new Error("Error en la solicitud: " + solicitud.status);

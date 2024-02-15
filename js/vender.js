@@ -1,14 +1,11 @@
 "use strict";
-import {limpiarErrores, validaObligatorio, validaSelect, errorNoRegistro, errorSwal, successSwal, limpiarStorage, precioDecimales, precioDecimales} from "./valida.js";
+import {limpiarErrores, validaObligatorio, validaSelect, errorNoRegistro, errorSwal, successSwal, limpiarStorage, precioDecimales} from "./valida.js";
 
-if (sessionStorage.getItem("nombreUsuario") == "") {
-  errorNoRegistro();
-} else {
+if (sessionStorage.getItem("nombreUsuario") == "") errorNoRegistro();
+else {
   document.addEventListener("DOMContentLoaded", function () {
-    //poner nombre en nav
     let nombre = document.getElementById("nombre");
     nombre.innerHTML = sessionStorage.getItem("nombreUsuario");
-
     // Establecer el valor en el input de vendedor
     document.getElementById("vendedor").value = sessionStorage.getItem("nombreUsuario");
 
@@ -22,6 +19,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
         imageArchivo.setAttribute("src", tmpPath);
       } else {
         errorSwal("Error","No es un archivo de imagen");
+        this.value = null;
       }
     });
 

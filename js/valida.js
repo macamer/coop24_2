@@ -7,6 +7,7 @@ export function limpiarErrores(errores, errorContainer) {
 export function limpiarStorage(){
   sessionStorage.setItem("nombreUsuario", "");
   sessionStorage.setItem("idUsuario", "");
+  window.location.href = "index.html";
 }
 
 function mostrarError(mens, campo) {
