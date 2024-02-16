@@ -5,6 +5,23 @@ section {
     padding: 60px 0;
 }
 
+.user {
+    width: 100%;
+}
+#error{
+    background-color: rgb(221, 88, 88);
+    align-items: center;
+    justify-content:flex-start;
+}
+#imgerror{
+    width: 1.5em;
+    padding-left: 0.5em;
+    filter: invert(100%);
+}
+#vendedor{
+    background-color: #223854;
+    color: #ffffff;
+}
 /* Estilos para los botones */
 .btn {
     font-weight: 600; /* Aumenté el grosor de la fuente */

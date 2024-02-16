@@ -2,6 +2,7 @@
 import { crearElemento, crearElementoTexto} from "./crearElement.js";
 import {limpiarErrores,validaObligatorio,validaSelect,errorNoRegistro,successSwal,errorSwal,precioDecimales, errorSwalPag} from "./valida.js";
 
+
 if (sessionStorage.getItem("idUsuario") == "") {
   errorNoRegistro();
 } else {
@@ -47,7 +48,7 @@ function jsonArticulos() {
         } else {
           // La respuesta contiene datos de artículos
           const jsonData = JSON.parse(data);
-        console.log("Respuesta del servidor:", data);
+        //console.log("Respuesta del servidor:", data);
           mostrarVenta(jsonData, 1);
           mostrarVendidos(jsonData, 1);
         } 
@@ -246,14 +247,13 @@ function borrarArticulo(idarticulo){
     .catch((error) => {errorSwal("Error", error);});
 }
 
-
 //////////////////////////////////////////////////////
 //MODIFICAR ART --->
 function modArticulo(idarticulo) {
   //MOSTRAR modSection OCULTAR articulos
   document.getElementById("verArticulos").style = "display:none;";
   document.getElementById("modSection").style = "display:block;";
-
+  
   // Establecer el valor en el input del VENDEDOR
   document.getElementById("vendedor").value = sessionStorage.getItem("nombreUsuario");
   //BOTONES
@@ -269,11 +269,14 @@ function modArticulo(idarticulo) {
   let file = document.getElementById("file");
   let descr = document.getElementById("descr");
   let inputArchivo = document.getElementById("file");
+  let imageArchivo = document.getElementById("imgfile");
   
-  mostrarArtMod(idarticulo);
-  enviarSelect(selector);
+  console.log(idarticulo);
+  enviarSelect(idarticulo); //lleva a mostrar los datos para modificar
+  
   precioDecimales(precio);
   
+  //cambio de imagen al introducir archivo
   inputArchivo.addEventListener("change", function () {
     let archivo = this.files[0];
     if (archivo.type.match("image.*")) {
@@ -299,95 +302,106 @@ function modArticulo(idarticulo) {
           if (validaObligatorio(descr)) 
             enviar(idarticulo, articulo, selector, descr, precio, file);
   });
+}
 
-  ////////////////////////////////////////////////////
-  function mostrarArtMod(idarticulo) {
-    var datos = new FormData();
-    datos.append("opcion", "AC");
-    datos.append("idarticulo", idarticulo);
-    fetch("php/coop24.php", { method: "POST", body: datos })
-      .then((response) => {
-        if (!response.ok) errorSwal("Error", "Error en la solicitud");
-        return response.json(); // convertir respuesta a JSON
-      })
-      .then((data) => {mostrarDatos(data);})
-      .catch((error) => {errorSwal("Error", error);});
-    }
-  //////////////////////////////////////////////////////////////////
-  const mostrarDatos = (art) => {
-    let articulo = document.getElementById("articulo"); //nombre
-    let precio = document.getElementById("precio");
-    let selector = document.getElementById("categoria");
-    let descr = document.getElementById("descr");
-    let imageArchivo = document.getElementById("imgfile");
+function enviarSelect(idarticulo) {
+  var datos = new FormData();
+  datos.append("opcion", "TC");
+  console.log("estoy en enviar Select");
+  let url = "php/coop24.php";
+  var solicitud = new XMLHttpRequest();
 
-    selector.value = art[0].categoria;
-    articulo.value = art[0].nombre;
-    precio.value = parseFloat(art[0].precio).toFixed(2);
-    descr.value = art[0].descripcion;
-    //Visualiza imagen ARTICULO
-    imageArchivo.src = "archivos/" + art[0].imagen;
-    imageArchivo.name = art[0].imagen;
-  };
-
-  function enviarSelect() {
-    var datos = new FormData();
-    datos.append("opcion", "TC");
-
-    let url = "php/coop24.php";
-    var solicitud = new XMLHttpRequest();
-
-    solicitud.addEventListener("load", function () {
-      try {
-        if (solicitud.status === 200) {
-          if (solicitud.responseText.trim() !== "error") {
-            mostrarCategoria(JSON.parse(solicitud.responseText));
-          } else {
-            errorSwal("Error","No hay categorias");
-          }
+  solicitud.addEventListener("load", function () {
+    try {
+      if (solicitud.status === 200) {
+        if (solicitud.responseText.trim() !== "error") {
+          mostrarCategoria(JSON.parse(solicitud.responseText), idarticulo);
         } else {
-          throw new Error("Error en la solicitud: " + solicitud.status);
+          errorSwal("Error","No hay categorias");
         }
-      } catch (error) {alert(error.message);}
-    });
-    solicitud.open("POST", url, true);
-    solicitud.send(datos); //del FormData
-  }
+      } else {
+        throw new Error("Error en la solicitud: " + solicitud.status);
+      }
+    } catch (error) {alert(error.message);}
+  });
+  solicitud.open("POST", url, true);
+  solicitud.send(datos); //del FormData
+}
 
-  // Función que maneja la respuesta y actualiza el select
-  function mostrarCategoria(art) {
-    let selector = document.getElementById("categoria");
+// Función que maneja la respuesta y actualiza el select
+function mostrarCategoria(art, idarticulo) {
+  let selector = document.getElementById("categoria");
 
-    art.forEach((art) => {
-      let opcion = document.createElement("option");
-      opcion.value = art.id;
-      opcion.text = art.nombre;
-      opcion.classList.add("categoria");
-      selector.appendChild(opcion);
-    });
-  }
+  art.forEach((art) => {
+    let opcion = document.createElement("option");
+    opcion.value = art.id;
+    opcion.text = art.nombre;
+    opcion.classList.add("categoria");
+    selector.appendChild(opcion);
+    console.log(opcion.value);
+  });
+  mostrarArtMod(idarticulo, selector); // se muestras la info despues de cargar el selector
+}
 
-  ////////////////////////////////////////////////////////////
-  ///ENVIAR DATOS PARA MODIFICAR -->
-  function enviar(idarticulo, articulo, categoria, descr, precio, file) {
-    let imageArchivo = document.getElementById("imgfile");
-    var datos = new FormData();
-    datos.append("opcion", "MA");
-    datos.append("idarticulo", idarticulo);
-    datos.append("categoria", categoria.value);
-    datos.append("nombre", articulo.value);
-    datos.append("descripcion", descr.value);
-    datos.append("precio", precio.value);
-    //comprobar si se ha cambiado o no la imagen
-    if (file.files[0] == null) datos.append("foto", imageArchivo.name);
-    else datos.append("foto", file.files[0]);
-
-    fetch("php/coop24.php", { method: "POST", body: datos })
+////////////////////////////////////////////////////
+function mostrarArtMod(idarticulo, selector) {
+  var datos = new FormData();
+  datos.append("opcion", "AC");
+  datos.append("idarticulo", idarticulo);
+  console.log("estoy principio fetch mostrar articulos. Selector: "+ selector.value);
+  fetch("php/coop24.php", { method: "POST", body: datos })
+    .then((response) => {
+      if (!response.ok) errorSwal("Error", "Error en la solicitud");
+      return response.json(); // convertir respuesta a JSON
+    })
     .then((data) => {
-      if (data.ok) successSwal("Artículo modificado", "Los datos han sido registrados");
-      else errorSwal("Error de registro", "No se han podido modificar los datos"); })
+      console.log("En fetch a punto de mostrar datos. Selector: "+ selector.value)
+      mostrarDatos(data, selector);
+    })
     .catch((error) => {errorSwal("Error", error);});
   }
+//////////////////////////////////////////////////////////////////
+const mostrarDatos = (art, selector) => {
+  let articulo = document.getElementById("articulo"); //nombre
+  let precio = document.getElementById("precio");
+  //let selector = document.getElementById("categoria");
+  let descr = document.getElementById("descr");
+  let imageArchivo = document.getElementById("imgfile");
+
+  articulo.value = art[0].nombre;
+  precio.value = parseFloat(art[0].precio).toFixed(2);
+  descr.value = art[0].descripcion;
+  //Visualiza imagen ARTICULO
+  imageArchivo.src = "archivos/" + art[0].imagen;
+  imageArchivo.name = art[0].imagen;
+  selector.value = art[0].categoria;
+  console.log("estoy mostrando datos selector.value: " + selector.value);
+  console.log("estos son los datos art[0] "+ art[0].categoria);
+  console.log("nombre: "+ art[0].nombre + ",selector: "+ art[0].categoria + ",precio:"+precio.value);
+};
+
+
+
+////////////////////////////////////////////////////////////
+///ENVIAR DATOS PARA MODIFICAR -->
+function enviar(idarticulo, articulo, categoria, descr, precio, file) {
+  let imageArchivo = document.getElementById("imgfile");
+  var datos = new FormData();
+  datos.append("opcion", "MA");
+  datos.append("idarticulo", idarticulo);
+  datos.append("categoria", categoria.value);
+  datos.append("nombre", articulo.value);
+  datos.append("descripcion", descr.value);
+  datos.append("precio", precio.value);
+  //comprobar si se ha cambiado o no la imagen
+  if (file.files[0] == null) datos.append("imagen", imageArchivo.name);
+  else datos.append("imagen", file.files[0]);
+
+  fetch("php/coop24.php", { method: "POST", body: datos })
+  .then((data) => {
+    if (data.ok) successSwal("Artículo modificado", "Los datos han sido registrados");
+    else errorSwal("Error de registro", "No se han podido modificar los datos"); })
+  .catch((error) => {errorSwal("Error", error);});
 }
 
 

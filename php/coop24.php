@@ -101,7 +101,7 @@ if ($opc == "SR" || $opc == "AV" || $opc == "TC" || $opc == "SV" || $opc == "SC"
           case "RS": // Registro nuevo Socio
                $archivoImagen = (isset($_FILES['foto'])) ? $_FILES['foto'] : null; // subir el archivo al servidor 
                if ($archivoImagen) {
-                    $ruta_destino_archivo = "socios/";
+                    $ruta_destino_archivo = "../socios/";
                     $nombre_archivo = $archivoImagen['name'];
                     $nombre_archivo = str_replace(' ', '', $nombre_archivo);
                     if (is_file($ruta_destino_archivo . $nombre_archivo)) {
@@ -142,7 +142,7 @@ if ($opc == "SR" || $opc == "AV" || $opc == "TC" || $opc == "SV" || $opc == "SC"
           case "MA": // Modificar Artículo
                $archivoImagen = (isset($_FILES['imagen'])) ? $_FILES['imagen'] : null; // subir el archivo al servidor 
                if ($archivoImagen) {
-                    $ruta_destino_archivo = "archivos/";
+                    $ruta_destino_archivo = "../archivos/";
                     $nombre_archivo = $archivoImagen['name'];
                     $nombre_archivo = str_replace(' ', '', $nombre_archivo);
                     if (is_file($ruta_destino_archivo . $nombre_archivo)) {
