@@ -19,6 +19,7 @@ if (sessionStorage.getItem("nombreUsuario") == "") {
     let contra2 = document.getElementById("contra2");
     let idUsuario = sessionStorage.getItem("idUsuario");
     let inputArchivo = document.getElementById("file");
+    let imageArchivo = document.getElementById("imgfile");
 
     mostrarPerfil(idUsuario);
     //cambiar imagen
